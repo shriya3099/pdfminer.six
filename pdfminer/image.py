@@ -9,9 +9,8 @@ from .layout import LTImage
 from .pdfcolor import LITERAL_DEVICE_CMYK
 from .pdfcolor import LITERAL_DEVICE_GRAY
 from .pdfcolor import LITERAL_DEVICE_RGB
-from .pdftypes import (LITERALS_DCT_DECODE,
-                       LITERALS_JBIG2_DECODE,
-                       LITERALS_JPX_DECODE)
+from .pdftypes import LITERALS_DCT_DECODE, LITERALS_JBIG2_DECODE, \
+    LITERALS_JPX_DECODE
 
 
 def align32(x: int) -> int:
