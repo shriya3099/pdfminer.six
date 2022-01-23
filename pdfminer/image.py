@@ -113,13 +113,12 @@ class ImageWriter:
         elif is_jbig2:
             input_stream = BytesIO()
             global_streams = self.jbig2_global(image)
+            if len(global_streams) > 1:
+                msg = 'There should never be more than one JBIG2Globals ' \
+                      'associated with a JBIG2 embedded image'
+                raise ValueError(msg)
             if len(global_streams) == 1:
-                global_stream, = global_streams
-                input_stream.write(global_stream.get_data().rstrip(b'\n'))
-            elif len(global_streams) > 1:
-                raise ValueError('There should never be more than one '
-                                 'JBIG2Globals associated with a JBIG2 '
-                                 'embedded image')
+                input_stream.write(global_streams[0].get_data().rstrip(b'\n'))
             input_stream.write(image.stream.get_data())
             input_stream.seek(0)
             reader = JBIG2StreamReader(input_stream)
