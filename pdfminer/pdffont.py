@@ -470,7 +470,7 @@ class TrueTypeFont:
                         if gid:
                             gid += delta
                         char2gid[first+c] = gid
-            elif fmttype == 4:
+            elif fmttype == 4 or fmttype == 6:
                 (segcount, _1, _2, _3) = \
                     cast(Tuple[int, int, int, int],
                          struct.unpack('>HHHH', fp.read(8)))
