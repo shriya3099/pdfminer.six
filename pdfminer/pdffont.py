@@ -470,7 +470,7 @@ class TrueTypeFont:
                         if gid:
                             gid += delta
                         char2gid[first+c] = gid
-            elif fmttype == 4 or fmttype == 6:
+            elif fmttype == 4:
                 (segcount, _1, _2, _3) = \
                     cast(Tuple[int, int, int, int],
                          struct.unpack('>HHHH', fp.read(8)))
@@ -499,6 +499,31 @@ class TrueTypeFont:
                     else:
                         for c in range(sc, ec+1):
                             char2gid[c] = (c + idd) & 0xffff
+            elif fmttype == 6:
+                firstcode, entcount = cast(Tuple[int, int],
+                            struct.unpack('>HH', fp.read(4)))
+                gids = cast(Tuple[int, ...],
+                            struct.unpack('>%dH' % entcount, 
+                                         fp.read(2 * entcount)))
+                for i in range(entcount):
+                    char2gid[firstcode + i] = gids[i]
+            elif fmttype == 10:
+                startcode, numchars = cast(Tuple[int, int],
+                            struct.unpack('>II', fp.read(8)))
+                gids = cast(Tuple[int, ...],
+                            struct.unpack('>%dH' % numchars, 
+                                         fp.read(2 * numchars)))
+                for i in range(numchars):
+                    char2gid[startcode + i] = gids[i]
+            elif fmttype == 12:
+                numgroups = cast(Tuple[int],
+                            struct.unpack('>I', fp.read(4)))
+                for i in range(numgroups):
+                    sc, ec, sgid = cast(Tuple[int, int, int],
+                            struct.unpack('>III', fp.read(12)))
+                    for code in range(sc, ec + 1):
+                        char2gid[code] = sgid
+                        sgid += 1
             else:
                 assert False, str(('Unhandled', fmttype))
         # create unicode map
